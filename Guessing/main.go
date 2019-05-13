@@ -8,9 +8,9 @@ import (
 
 func main() {
 	args := os.Args
-	n, _ := strconv.Atoi(args[0])
-	low, _ := strconv.Atoi(args[1])
-	high, _ := strconv.Atoi(args[2])
+	n, _ := strconv.Atoi(args[1])
+	low, _ := strconv.Atoi(args[2])
+	high, _ := strconv.Atoi(args[3])
 	result := turns(n, low, high)
 
 	fmt.Printf("turns is %d", result)
