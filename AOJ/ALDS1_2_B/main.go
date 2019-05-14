@@ -32,7 +32,7 @@ func selectionSort(e []int, n int) ([]int, int) {
 				minj = j
 			}
 		}
-		if e[i] != e[minj] {
+		if i != minj {
 			tmp := e[i]
 			e[i] = e[minj]
 			e[minj] = tmp
