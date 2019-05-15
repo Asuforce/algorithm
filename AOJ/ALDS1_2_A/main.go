@@ -19,6 +19,11 @@ func main() {
 		fmt.Fscan(r, &e[x])
 	}
 
+	a, c := bubbleSort(e, n)
+	fmt.Printf("%v\n%d\n", strings.Trim(fmt.Sprint(a), "[]"), c)
+}
+
+func bubbleSort(e []int, n int) ([]int, int) {
 	flag := true
 	c := 0
 	for flag {
@@ -33,5 +38,5 @@ func main() {
 			}
 		}
 	}
-	fmt.Printf("%v\n%d\n", strings.Trim(fmt.Sprint(e), "[]"), c)
+	return e, c
 }
