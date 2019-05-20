@@ -16,84 +16,79 @@ type node struct {
 
 type linkedList struct {
 	head *node
-	tail *node
+}
+
+func newLinkedList() *linkedList {
+	n := &node{}
+	n.prev, n.next = n, n
+	return &linkedList{n}
 }
 
 func (ll *linkedList) insert(x int) {
-	new := &node{x, nil, ll.head}
-	ll.head.next = new
-	ll.head = new
-	if ll.tail == nil {
-		ll.tail = ll.head
-	}
+	next := ll.head.next
+	n := &node{}
+	n.key = x
+	n.next = next
+	n.prev = ll.head
+	ll.head.next = n
+	next.prev = n
 }
 
-func (ll *linkedList) delete(x int) {
-	n := ll.searchList(x)
-	if n.next == nil {
-		ll.tail = n.prev
+func (ll *linkedList) delete(n *node) {
+	next := n.next
+	prev := n.prev
+	prev.next = next
+	next.prev = prev
+}
+
+func (ll *linkedList) deleteFromIndex(x int) {
+	for n := ll.head.next; n != ll.head; n = n.next {
+		if n.key == x {
+			ll.delete(n)
+			return
+		}
 	}
-	n.prev.next = n.next
-	n.next.prev = n.prev
-	n = nil
 }
 
 func (ll *linkedList) deleteFirst() {
-	ll.delete(ll.head.key)
+	ll.delete(ll.head.next)
 }
 
 func (ll *linkedList) deleteLast() {
-	ll.delete(ll.tail.key)
-}
-
-func (ll *linkedList) searchList(x int) *node {
-	n := ll.head
-	for n.key != x {
-		n = n.prev
-	}
-	return n
+	ll.delete(ll.head.prev)
 }
 
 func main() {
-	s := bufio.NewScanner(os.Stdin)
 	n := 0
-	if s.Scan() {
-		n, _ = strconv.Atoi(s.Text())
-	}
+	fmt.Scan(&n)
 
-	ll := &linkedList{}
+	s := bufio.NewScanner(os.Stdin)
+	s.Split(bufio.ScanWords)
+	ll := newLinkedList()
 	for i := 0; i < n; i++ {
-		if !s.Scan() {
-			break
-		}
-
-		com := strings.Fields(s.Text())
-		switch com[0] {
-		case "insert":
-			ll.insert(stoi(com[1]))
-		case "delete":
-			ll.delete(stoi(com[1]))
+		s.Scan()
+		cmd := s.Text()
+		switch cmd {
 		case "deleteFirst":
 			ll.deleteFirst()
 		case "deleteLast":
 			ll.deleteLast()
+		default:
+			s.Scan()
+			x, _ := strconv.Atoi(s.Text())
+			if cmd == "insert" {
+				ll.insert(x)
+				break
+			}
+			ll.deleteFromIndex(x)
 		}
 	}
 
-	node := ll.head
 	e := []int{}
-	for node != nil {
-		e = append(e, node.key)
-		node = node.next
+	for n := ll.head.next; n != ll.head; n = n.next {
+		e = append(e, n.key)
 	}
-	fmt.Println(e)
-	// t := trimBracket(fmt.Sprint(e))
-	// fmt.Println(strings.Replace(t, " ", "\n", -1))
-}
-
-func stoi(x string) int {
-	i, _ := strconv.Atoi(x)
-	return i
+	fmt.Println(trimBracket(fmt.Sprint(e)))
 }
 
 func trimBracket(s string) string {
